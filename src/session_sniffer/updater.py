@@ -2,6 +2,7 @@
 
 import functools
 import hashlib
+import os
 import shutil
 import subprocess
 import sys
@@ -157,7 +158,10 @@ def _apply_update(new_exe: Path) -> None:
 
     new_exe.unlink(missing_ok=True)
     subprocess.Popen([str(current_exe)])
-    sys.exit(0)
+    # os._exit bypasses atexit handlers, which is intentional: PyInstaller registers
+    # an atexit handler that deletes the _MEI temp dir. Using sys.exit would fire it
+    # while the new process is still importing modules from it, causing a crash.
+    os._exit(0)
 
 
 def _download_and_apply(candidate_info: VersionInfo, version_str: str) -> None:
