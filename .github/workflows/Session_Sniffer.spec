@@ -1,10 +1,13 @@
 # -*- mode: python ; coding: utf-8 -*-
 
+from PyInstaller.utils.hooks import collect_all
+
+numpy_datas, numpy_binaries, numpy_hiddenimports = collect_all('numpy')
 
 a = Analysis(
     ['..\\..\\src\\session_sniffer\\main.py'],
     pathex=['..\\..\\src'],
-    binaries=[],
+    binaries=[] + numpy_binaries,
     datas=[
         ('..\\..\\pyproject.toml', '.'),
         ('..\\..\\bin', 'bin'),
@@ -13,8 +16,8 @@ a = Analysis(
         ('..\\..\\scripts', 'scripts'),
         ('..\\..\\TTS', 'TTS'),
         ('..\\..\\src\\session_sniffer\\webserver\\static', 'session_sniffer\\webserver\\static'),
-    ],
-    hiddenimports=[],
+    ] + numpy_datas,
+    hiddenimports=[] + numpy_hiddenimports,
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
